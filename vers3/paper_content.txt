@@ -1,0 +1,480 @@
+================================================================================
+GraphSPAC — Paper Content Export
+Scenarios, Objectives, Constraints, and Mathematical Formulation
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+1. OPTIMIZATION PROBLEM FORMULATION
+────────────────────────────────────────────────────────────────────────────────
+
+We pose the sensor placement problem as a multi-objective optimization:
+
+  minimize  F(X) = [f₁(X), f₂(X), f₃(X)]ᵀ   (and optional f₄–f₇)
+
+subject to:
+  g_ij(X) = d_min − ‖x_i − x_j‖ ≤ 0    ∀ i < j        (minimum inter-sensor distance)
+  h_i(X)  = 1 − 1_{x_i ∈ Ω_free}       = 0    ∀ i      (domain feasibility)
+
+where X = {x₁, x₂, …, x_N} ∈ ℝ^(N×2) is the set of N sensor positions.
+
+─── Core Objectives ────────────────────────────────────────────────────────────
+
+f₁(X) = −H_LSD(X)
+  Negative Lag Sampling Density (LSD) entropy.
+  The co-array Δ is the difference set:
+      Δ = { x_i − x_j : i ≠ j }
+  Scalar lags r_{ij} = ‖x_i − x_j‖ are histogrammed in log₁₀-space.
+  Minimising f₁ maximises:
+      H_LSD = −∑_k p_k log p_k
+  where p_k is the relative frequency of lags in the k-th log-bin.
+  Higher entropy ↔ more uniform coverage of lag scales ↔ broader bandwidth.
+
+f₂(X) = −SLL(X)
+  Negative Side-Lobe Level (SLL) in dB.
+  The Array Response Function (ARF) is:
+      W(k) = (1/N²) |∑_{n=1}^{N} e^{i k · x_n}|²
+  where k = (k_x, k_y) is the wavenumber vector.
+  SLL is computed as:
+      SLL = −20 log₁₀(max_{k ∉ Ω_main} W(k) / W(0))  [dB]
+  Minimising f₂ maximises |SLL|, i.e., suppresses side lobes.
+
+f₃(X) = −λ₂(X)
+  Negative algebraic connectivity (Fiedler value) of the sensor graph G.
+  The graph Laplacian is L = D − A, where:
+      A_{ij} = exp(−‖x_i − x_j‖² / (2 σ²))    (Gaussian adjacency)
+      D = diag(A · 1)
+  λ₂ is the second-smallest eigenvalue of L.
+  Minimising f₃ maximises λ₂, ensuring a well-connected, robust sensor graph.
+
+─── Optional / Extended Objectives ────────────────────────────────────────────
+
+f₄(X) = −D_az(X; ψ)     [Directional Score — activated by noise_azimuths]
+  For each dominant noise azimuth ψ (geographic, 0° = North, CW), the
+  propagation direction in math convention is:
+      α = π/2 − ψ_rad
+  The directional score rewards sensor pairs PARALLEL to the propagation axis:
+      D_az = mean_{i<j} |cos(θ_{ij} − α)|
+  where θ_{ij} = arctan2(y_j − y_i, x_j − x_i) is the pair azimuth.
+  Minimising f₄ maximises coherence sampling along the noise wavefront normal.
+
+f₅(X) = L_LoS(X; Ω)     [Line-of-Sight penalty — activated by --los]
+  Fraction of sensor pairs whose connecting segment crosses an obstacle:
+      L_LoS = (1/|Δ|) ∑_{i<j} 1_{segment(x_i, x_j) ∩ Ω_obstacle ≠ ∅}
+  Minimising f₅ avoids pairs corrupted by structural scattering (Fresnel shadow).
+
+f₆(X) = R_Golomb(X)     [Golomb redundancy — activated by --golomb]
+  Fraction of lag-histogram bins with count > 1:
+      R = (1/B) ∑_{b=1}^{B} 1_{hist_b > 1}
+  Minimising f₆ drives the array toward a 2D Golomb ruler (zero-redundancy
+  co-array), where every inter-sensor distance is unique.
+
+f₇(X) = Φ_NF(X; s)      [Near-field Hankel — activated by near_field=True]
+  For a point source at s ∈ ℝ², each sensor samples a different Hankel phase:
+      Φ_NF = 1 − CV{ |H₀^(1)(k ‖x_n − s‖)| }
+  where CV = σ/μ is the coefficient of variation.
+  Minimising f₇ maximises the spread of Hankel amplitudes across the array
+  (parabolic focusing toward the near-field source).
+
+─── Kernel Functions ───────────────────────────────────────────────────────────
+
+Bessel kernel (Scenario kernel="bessel"):
+  The theoretical SPAC coherence for an isotropic wavefield is:
+      γ(r) = J₀(k r) = J₀(2π f r / Vs)
+  Sampling error:
+      Φ_J₀ = ∑_{i<j} |J₀(k r_{ij}) − J₀_sampled(r_{ij})|
+
+Hankel kernel (Scenario kernel="hankel"):
+  For an anisotropic or directional noise field, the outgoing-wave kernel is:
+      H₀^(1)(k r) = J₀(k r) + i Y₀(k r)
+  The real part Re[H₀^(1)] is the coherence kernel for a directional source.
+  Sampling error:
+      Φ_H = ∑_{i<j} |Re[H₀^(1)(k r_{ij})] − H₀_sampled(r_{ij})|
+
+─── Optimization Algorithm ─────────────────────────────────────────────────────
+
+NSGA-II (Non-dominated Sorting Genetic Algorithm II, Deb et al. 2002)
+implemented via the pymoo library (Blank & Deb 2020).
+
+  Population size : pop (default 100)
+  Generations     : n_gen (default 200)
+  Crossover       : Simulated Binary Crossover (SBX), prob=0.9, η=15
+  Mutation        : Polynomial Mutation (PM), η=20
+  Selection       : Non-dominated sorting + crowding distance
+  Pareto solution : Knee-point — minimum Euclidean distance to the utopia point
+                    in normalised objective space
+
+  Random seed     : 1249718046570  (fixed for reproducibility)
+
+
+────────────────────────────────────────────────────────────────────────────────
+2. GRAPH-THEORETIC METRICS
+────────────────────────────────────────────────────────────────────────────────
+
+Graph Laplacian:
+  L = D − A
+  Eigenvalues: 0 = λ₁ ≤ λ₂ ≤ … ≤ λ_N
+
+Algebraic Connectivity (λ₂, Fiedler value):
+  λ₂ > 0  ↔  graph is connected
+  Higher λ₂  ↔  more robust to node/edge removal
+  Used in robustness simulation to quantify connectivity decay under nodal failure.
+
+Isotropy Score:
+  iso = max(0, 1 − CV(hist_az))
+  where hist_az is the azimuth histogram of all lag vectors (bin count = 18 bins
+  over [−π, π]), and CV = σ/μ is the coefficient of variation.
+  iso = 1  ↔  perfectly isotropic; iso = 0  ↔  maximally anisotropic.
+
+LSD Entropy (H_LSD):
+  Measures uniformity of inter-sensor distance coverage on a logarithmic scale.
+  H_LSD = −∑_k p_k log p_k  (with 30 log-spaced bins over [r_min, r_max])
+
+Φ_Bessel / Φ_Hankel (Kernel Sampling Coverage):
+  Sum of kernel values evaluated at each lag, normalised.
+  Higher values indicate better coverage of the kernel's characteristic scale.
+
+
+────────────────────────────────────────────────────────────────────────────────
+3. DOMAIN DEFINITIONS
+────────────────────────────────────────────────────────────────────────────────
+
+Ω_free  : feasible sensor deployment area (white cells in grid)
+Ω_obs   : obstacle / forbidden area (red cells — buildings, roads, etc.)
+d_min   : minimum allowed inter-sensor distance [m]
+r_min   : minimum lag in the co-array (= min_{i≠j} ‖x_i − x_j‖)
+r_max   : maximum lag (= max_{i≠j} ‖x_i − x_j‖) = array aperture
+focus   : target depth [m]; required aperture ≈ 4/3 × focus
+Vs      : shear-wave velocity [m/s]; k = 2π f / Vs
+
+
+────────────────────────────────────────────────────────────────────────────────
+4. SCENARIO CATALOGUE (22 Scenarios)
+────────────────────────────────────────────────────────────────────────────────
+
+──── BASELINE SCENARIOS ────────────────────────────────────────────────────────
+
+[Sc 1]  Open Domain (J₀, N=10)
+  Domain   : Unconstrained open Euclidean plane (Ω_free = all)
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Bessel
+  Objectives: f₁ (LSD), f₂ (SLL), f₃ (λ₂)
+  Purpose  : Theoretical upper bound for LSD entropy with no geometric constraints.
+             Reference scenario for all constrained comparisons.
+
+[Sc 2]  Open Domain (J₀, N=2) — Single Pair
+  Domain   : Open
+  N=2, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Edge case. N=2 gives a single co-array pair (r_min = r_max).
+             ARF is a cosine fringe; SLL ≈ 0 dB. λ₂ = Gaussian weight of single edge.
+             Tests optimizer's behavior at the degenerate limit.
+
+──── L-SHAPED DOMAIN SCENARIOS ─────────────────────────────────────────────────
+
+[Sc 3]  L-Shaped Domain (H₀⁽¹⁾, N=10)
+  Domain   : Non-convex L-shape (two perpendicular corridors)
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel, noise_az=[0°]
+  Objectives: f₁, f₂, f₃, f₄ (directional)
+  Purpose  : Base L-shape scenario from paper. Dominant noise from North.
+             Hankel kernel models directional wavefront from azimuth 0°.
+
+[Sc 4]  L-Shaped Domain (H₀⁽¹⁾, N=2) — Single Pair
+  Domain   : L-shape
+  N=2, d_min=5 m, focus=30 m, kernel=Hankel
+  Purpose  : Does the optimizer bridge the L-corner with a single pair?
+             Tests connectivity under maximal geometric constraint.
+
+[Sc 5]  L-Shape + Noise 0° (Directional Stress — Kuzey)
+  Domain   : L-shape
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel, noise_az=[0°]
+  Objectives: f₁, f₂, f₃, f₄ (directional score for 0°)
+  Purpose  : Topological Steering test. Noise from North → optimizer should
+             preferentially place sensors in the vertical arm of the L, maximising
+             pair alignment with the N-S propagation axis.
+             Prediction: majority of pairs oriented N-S (rose diagram peaks at 0°/180°).
+
+[Sc 6]  L-Shape + Noise 90° (Aliasing Check — Doğu)
+  Domain   : L-shape
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel, noise_az=[90°]
+  Objectives: f₁, f₂, f₃, f₄ (directional score for 90°)
+  Purpose  : Topological Steering for East direction. Does the horizontal arm
+             experience spatial aliasing when the optimizer clusters sensors there?
+             Critical check: r_min in E-W direction vs. Nyquist limit k_N = π/r_min.
+
+[Sc 7]  L-Shape + Central Obstacle (Hole Scenario)
+  Domain   : L-shape with obstacle at inner corner (radius = 3 grid cells)
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Simulates a building at the street corner blocking sensor access.
+             Critical question: does λ₂ collapse (graph splits into two components)?
+             If the optimizer maintains λ₂ > 0, it has found a "bridge" solution.
+
+[Sc 8]  L-Shape + Central Obstacle (N=2)
+  Domain   : L-shape with central obstacle
+  N=2, d_min=5 m, focus=30 m, kernel=Bessel
+  Purpose  : Single-pair bridge across the gap. Does the optimizer span the hole?
+
+──── EXTREME GEOMETRY SCENARIOS ────────────────────────────────────────────────
+
+[Sc 9]  Urban Canyon 15m × 105m (High Aspect Ratio)
+  Domain   : Narrow rectangular corridor, 3 cells × 21 cells (15m × 105m)
+  N=8, d_min=5 m, focus=20 m, Vs=400 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Euclidean Bottleneck scenario. A circular array is geometrically
+             impossible. GraphSPAC must exploit a pseudo-linear configuration:
+             — Long dimension: high r_max → deep sensitivity
+             — Short dimension: low r_min → shallow near-surface sampling
+             Pareto front shows explicit trade-off between aperture dimensions.
+
+[Sc 10]  Urban Canyon (N=2) — Maximum Aperture 1D
+  Domain   : Urban Canyon (3×21 cells)
+  N=2, d_min=5 m, focus=20 m, kernel=Bessel
+  Purpose  : Optimizer should place both sensors at opposite ends for max aperture.
+             Tests whether NSGA-II trivially finds corner placement.
+
+──── MULTISCALE SCENARIOS ──────────────────────────────────────────────────────
+
+[Sc 11]  Deep Focus (focus=50 m, N=10)
+  Domain   : Open (50×50 grid, spacing=5 m)
+  N=10, d_min=5 m, focus=50 m, Vs=600 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Deep target requires large aperture (r_max ≥ 4/3 × 50 = 67 m).
+             GA biases toward maximising r_max. First half of the Deep-Shallow pair.
+
+[Sc 12]  Shallow Focus (focus=10 m, N=8)
+  Domain   : Open (15×15 grid, spacing=2.5 m)
+  N=8, d_min=2.5 m, focus=10 m, Vs=250 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Shallow target requires fine spacing (r_min ≤ λ/2).
+             When Sc 11 and Sc 12 solutions are overlaid, the combined LSD histogram
+             should show a BIMODAL distribution — two distinct peaks in lag-space
+             corresponding to shallow (short lags) and deep (long lags) targets.
+
+──── URBAN ISLAND AND CORRIDOR ─────────────────────────────────────────────────
+
+[Sc 13]  Urban Island — Two Separated Zones
+  Domain   : Two valid rectangular blocks separated by a forbidden band (35% gap)
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Simulates two parks on either side of a road.
+             Long inter-island edges → large r_max → deep sensitivity.
+             Short intra-island edges → small r_min → shallow sensitivity.
+             Critical: is λ₂ maintained by the long bridge edges, or does
+             the graph partition into two clusters?
+
+[Sc 14]  Seismic Corridor 15m × 205m (1D Confinement)
+  Domain   : Narrow corridor, 3 cells × 41 cells (15m × 205m)
+  N=10, d_min=5 m, focus=40 m, Vs=500 m/s, kernel=Hankel, noise_az=[0°]
+  Objectives: f₁, f₂, f₃, f₄ (directional for 0°)
+  Purpose  : Extreme 1D confinement with a point noise source at tunnel end.
+             Rose diagram should show near-total N-S anisotropy.
+             Hankel kernel provides "pseudo-linear gain":
+             coherence along the corridor axis is preserved even for
+             large sensor separations, unlike J₀ which decays isotropically.
+             Spectral inpainting: H₀⁽¹⁾ fills the azimuthal gap left by
+             1D geometry in the ARF.
+
+──── MULTI-SOURCE AND EXOTIC SCENARIOS ─────────────────────────────────────────
+
+[Sc 15]  Cross-Fire: Noise from North + East (90° Sources)
+  Domain   : Open
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel, noise_az=[0°, 90°]
+  Objectives: f₁, f₂, f₃, f₄ (combined directional for both azimuths)
+  Purpose  : Two dominant noise sources (e.g., highway N, factory E).
+             Optimizer must balance pair alignment toward BOTH propagation axes.
+             Expected result: rose diagram shows peaks at both N-S and E-W,
+             demonstrating invariant cross-fire topology.
+
+[Sc 16]  Fractal Boundary (Organic, p=0.65)
+  Domain   : Smoothed percolation grid (p_open=0.65 > threshold, then smoothing pass)
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Organic, biomorphic domain resembling old urban centres with irregular plots.
+             Sensor distribution expected to resemble slime-mold topology —
+             biologically plausible but spectrally efficient.
+
+[Sc 17]  Variable Spacing (spacing=10 m, dmin=2 m) — Grid-Lock Test
+  Domain   : Open (20×20 grid, spacing=10 m, but d_min=2 m)
+  N=10, d_min=2 m, focus=30 m, Vs=500 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Coarse discrete grid vs. fine minimum-distance constraint.
+             Tests whether NSGA-II (which operates in continuous space) escapes
+             the grid lattice and exploits sub-grid precision in placement.
+             Grid-Lock: all solutions snap to 10m lattice → LSD limited.
+             Escape: continuous NSGA-II finds off-lattice optima.
+
+[Sc 18]  Fresnel Shadow — Line-of-Sight Constraint
+  Domain   : Open grid with a solid central obstacle block (12% of width)
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel
+  Objectives: f₁, f₂, f₃, f₅ (LoS penalty)
+  Purpose  : Models a deep-foundation building that scatters waves.
+             Pairs whose segment crosses the obstacle are penalised:
+             their coherence is physically unreliable (Fresnel diffraction).
+             Optimizer treats the graph as bipartite:
+             — Sensors on west side of obstacle
+             — Sensors on east side of obstacle
+             Cross-obstacle edges are excluded from co-array analysis.
+             Expected array shape: a "gravitational lens" — sensors arc around
+             the obstacle's shadow zone.
+
+[Sc 19]  2D Golomb Ruler — Zero-Redundancy Co-array
+  Domain   : Open
+  N=8, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Bessel
+  Objectives: f₁, f₂, f₃, f₆ (Golomb redundancy)
+  Purpose  : Every inter-sensor distance must be UNIQUE (no repeated lags).
+             2D extension of the Golomb ruler / Costas array concept.
+             Minimising f₆ = fraction of overloaded lag bins drives the array
+             toward an aperiodic configuration analogous to a Costas array.
+             Expected SLL: approaches the theoretical minimum for N sensors,
+             potentially −20 log₁₀(N) dB ≈ −18 dB for N=8.
+
+[Sc 20]  Spherical Near-Field (source at 20 m)
+  Domain   : Open (20×20 grid, spacing=5 m)
+  N=10, d_min=5 m, focus=20 m, Vs=400 m/s, kernel=Hankel
+  Objectives: f₁, f₂, f₃, f₇ (near-field Hankel)
+  Near-field source: (50 m, 20 m) — located 20 m from domain centre
+  Purpose  : Plane-wave assumption breaks down for nearby sources (< 2D²/λ).
+             f₇ maximises the coefficient of variation of |H₀⁽¹⁾(k ‖x_n − s‖)|
+             across sensors, effectively steering the array as a parabolic dish
+             focused on the near-field source.
+             Expected array shape: concave "bowl" facing the source location.
+
+[Sc 21]  Percolation Labyrinth — Critical Threshold (p=0.59)
+  Domain   : Random percolation grid, 35×35 cells, p_open=0.59 (site percolation
+             threshold for square lattice ≈ 0.593)
+  N=10, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel
+  Objectives: f₁, f₂, f₃
+  Purpose  : At criticality, the open-cell cluster is a fractal with dimension
+             D_f ≈ 1.896. No regular array shape (circle, triangle) is possible.
+             NSGA-II must navigate the labyrinth to maximise λ₂.
+             Expected topology: sensor distribution resembles a neural network
+             or slime-mold (Physarum polycephalum) — maximally connected
+             through the labyrinth's spanning cluster.
+
+[Sc 22]  Percolation Labyrinth (N=2) — Extreme Connectivity Stress
+  Domain   : Percolation grid (p=0.59, 35×35 cells)
+  N=2, d_min=5 m, focus=30 m, Vs=500 m/s, kernel=Hankel
+  Objectives: f₁, f₂, f₃
+  Purpose  : Edge case in a fractal domain. Does a single pair span the longest
+             available path through the labyrinth?
+
+
+────────────────────────────────────────────────────────────────────────────────
+5. ROBUSTNESS SIMULATION
+────────────────────────────────────────────────────────────────────────────────
+
+Nodal failure simulation:
+  For k = 1, 2, …, K:
+    1. Remove sensor i with the highest λ₂-sensitivity:
+          Δλ₂(i) = λ₂(X) − λ₂(X \ {x_i})
+    2. Recompute λ₂ and SLL on the reduced array.
+    3. Record λ₂ decay curve and ΔSLL.
+
+Robustness criterion:
+  An array is "Topologically Robust" if |ΔSLL| ≤ 3 dB after removing the
+  single most critical sensor.
+
+Comparative robustness:
+  GraphSPAC arrays are compared against classical configurations
+  (Circle, Nested Triangles, Propeller 3×3, Kennett Spiral) matched to
+  the same N and aperture, using λ₂ decay rate as the primary metric.
+
+
+────────────────────────────────────────────────────────────────────────────────
+6. CLASSICAL ARRAY BENCHMARKS
+────────────────────────────────────────────────────────────────────────────────
+
+All classical arrays are generated for the same aperture R and matched N:
+
+Circle:         N sensors equally spaced on a circle of radius R.
+Nested Triangles: Two equilateral triangles (inner/outer) sharing a centre.
+Propeller 3×3: Three arms at 120° spacing, each with 3 nested sensors.
+Kennett Spiral: Archimedean spiral with logarithmically spaced sensors,
+               based on Kennett et al. (2015).
+
+Comparison metrics:
+  SLL [dB], Isotropy score, λ₂ (algebraic connectivity), r_min, r_max, LSD entropy.
+
+
+────────────────────────────────────────────────────────────────────────────────
+7. SOFTWARE AND REPRODUCIBILITY
+────────────────────────────────────────────────────────────────────────────────
+
+Implementation : Python 3, NumPy, SciPy, pymoo 0.6.x, NetworkX, Matplotlib
+Random seed    : 1249718046570 (fixed for all runs)
+CLI entry point: vers3/main.py
+
+Command syntax:
+  # Predefined scenario:
+  python main.py --scenario <ID|all> --gens <G> --pop <P> [options]
+
+  # Fully custom scenario via Excel grid (domain from .xlsx):
+  python main.py --scenario 0 --yeryok 1 --matrix <file.xlsx> --sensors <N> [options]
+
+Key flags:
+  --noiseazimuth AZ [AZ ...]   : add directional objective f4 (degrees, 0=N CW)
+  --golomb                     : add Golomb redundancy objective f6
+  --los                        : add Line-of-Sight penalty objective f5
+  --yeryok 1                   : activate Excel matrix grid loading
+  --matrix PATH                : .xlsx file path (1=accessible, 0=obstacle per cell)
+  --spacing M                  : grid spacing in metres (default 5.0)
+  --compare                    : compare result against classical arrays
+  --robustness                 : run nodal-failure simulation
+  --failure_analysis           : identify most critical sensor (lambda2 sensitivity)
+
+
+────────────────────────────────────────────────────────────────────────────────
+8. VISUALIZATION METHODOLOGY
+────────────────────────────────────────────────────────────────────────────────
+
+Five-panel result figure (sc<ID>_result.png):
+  Panel 0 : Array Geometry     — sensor positions on feasibility grid
+                                 white = accessible, red = obstacle
+  Panel 1 : Co-array (Delta)   — inter-station difference vectors (North-up)
+                                 red circle = r_min, green circle = r_max
+  Panel 2 : ARF (linear)       — Array Response Function, normalised [0, 1]
+  Panel 3 : ARF (dB)           — 20 log10 scale, dynamic range 40 dB, seismic_r cmap
+  Panel 4 : Rose diagram       — azimuthal distribution of co-array lag vectors
+
+Figure title format:
+  Line 1: GraphSPAC -- Sc <ID>: <name>   [Kernel: BESSEL (J0) | HANKEL (H0^(1))]
+  Line 2: N=<N>  lambda2=<>  SLL=<> dB  Isotropy=<>  r_min=<> m  r_max=<> m
+
+Rose diagram bin centering:
+  18 bins x 10 degrees = half-circle [0, 180).
+  Range shifted by half a bin (5 deg) so cardinal angles (0, 90, 180)
+  land exactly on bin CENTRES, not on bin edges.
+  Formula:
+    half_bin = pi / (2 * n_bins)                     (= 5 deg)
+    histogram range = (-half_bin, pi - half_bin)
+    bin centres = [0 deg, 10 deg, 20 deg, ..., 90 deg, ..., 170 deg]
+  Result: sensor pairs at 90 deg (E-W) appear centred on the E tick.
+
+Coordinate convention:
+  Grid y increases southward (row=0 = top = North).
+  All angle computations negate dy before arctan2 to recover geographic North.
+  Co-array scatter: dy negated so North is up on the plot.
+
+
+────────────────────────────────────────────────────────────────────────────────
+9. OUTPUT FILES
+────────────────────────────────────────────────────────────────────────────────
+
+For each scenario run files are saved to the --output directory:
+
+  sc<ID>_result.png              : Five-panel visualisation
+  sc<ID>_pareto.png              : 3D Pareto front scatter (f1, f2, f3)
+  sc<ID>_metrics.txt             : Full metrics text report
+
+Optional outputs:
+  sc<ID>_comparison.png          : GraphSPAC vs classical arrays (--compare)
+  sc<ID>_robustness.png          : lambda2 decay under nodal failure (--robustness)
+  sc<ID>_failure_analysis.txt    : Critical sensor analysis (--failure_analysis)
+
+metrics.txt sections:
+  SCENARIO PARAMETERS     : N, d_min, focus, Vs, kernel, domain, spacing, noise_az
+  SENSOR POSITIONS        : x, y [m] for each sensor numbered 1..N
+  COMPUTED METRICS        : SLL, lambda2, isotropy, LSD_H, r_min, r_max, phi_J0, phi_H
+  APERTURE CHECK          : required r_max (= 4/3 * focus) vs. achieved, OK / WARNING
+
+================================================================================
