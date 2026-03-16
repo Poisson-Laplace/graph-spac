@@ -1,3 +1,7 @@
+yo bro just hear me out. do not ever use vol 3 in case of trying to find an array for real life experiment. I realized some errors and fixing asap. wait for vol 5. In the end geodesic is the result for both design and calculate the parameters. why not 1, 2 and 4 you say. Idk whatever the publisher(mario) decides.
+
+
+
 # GraphSPAC (vol3)
 
 **Topological Design and Optimization of Seismic Arrays in Constrained Urban Environments**
