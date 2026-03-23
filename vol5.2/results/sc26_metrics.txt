@@ -1,0 +1,53 @@
+============================================================
+  GraphSPAC vol3 — Sc 26: The Sponge (Topological Porosity)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 12
+  d_min                   : 3.0 m
+  focus (target depth)    : 25.0 m
+  Vs (shear-wave vel.)    : 400.0 m/s
+  kernel                  : bessel (J₀)
+  domain                  : sponge
+  grid spacing            : 4.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    76.5441    y =    79.9577
+  Sensor  2  :  x =    76.6068    y =    65.3970
+  Sensor  3  :  x =    69.8931    y =    71.8728
+  Sensor  4  :  x =    77.2413    y =    44.7577
+  Sensor  5  :  x =    56.5401    y =    47.8764
+  Sensor  6  :  x =    44.7071    y =    71.0758
+  Sensor  7  :  x =    75.7159    y =    56.2933
+  Sensor  8  :  x =    34.5455    y =    69.0454
+  Sensor  9  :  x =    52.0383    y =    39.2041
+  Sensor 10  :  x =    51.6582    y =    81.0969
+  Sensor 11  :  x =    61.0842    y =    57.6066
+  Sensor 12  :  x =    63.8797    y =    81.9703
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 12
+  n_pairs                     : 66
+  r_min_m                     : 8
+  r_max_m                     : 49.9408
+  lambda2                     : 255.343
+  sll_db                      : -15.9967
+  isotropy                    : 0.88866
+  lsd_H                       : 2.89307
+  phi_bessel                  : 2.56172
+  phi_hankel                  : 0.451893
+  dr_db                       : 25.6233
+  mlw_rad_per_m               : 0.119399
+  eta_res                     : 1
+  spac_criterion              : PASS
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 33.33 m
+  Achieved r_max               : 49.94 m
+  Status                       : OK
+
+============================================================

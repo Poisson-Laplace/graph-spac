@@ -1,0 +1,61 @@
+============================================================
+  GraphSPAC vol3 — Sc 1: Open Domain (J₀, N=10)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 20
+  d_min                   : 5.0 m
+  focus (target depth)    : 30.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : open
+  grid spacing            : 5.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    80.9096    y =    77.4454
+  Sensor  2  :  x =    53.5408    y =    44.3333
+  Sensor  3  :  x =    27.8367    y =    42.3091
+  Sensor  4  :  x =    69.0107    y =    85.3672
+  Sensor  5  :  x =    60.1387    y =    58.1823
+  Sensor  6  :  x =    40.6214    y =    75.3446
+  Sensor  7  :  x =    72.0150    y =    55.9434
+  Sensor  8  :  x =    46.4390    y =    63.8588
+  Sensor  9  :  x =    32.6649    y =    93.9327
+  Sensor 10  :  x =    23.5465    y =    77.8169
+  Sensor 11  :  x =    55.7671    y =    74.0375
+  Sensor 12  :  x =    42.0493    y =    28.9744
+  Sensor 13  :  x =    23.2581    y =    65.0959
+  Sensor 14  :  x =    67.1899    y =    37.7327
+  Sensor 15  :  x =    50.2469    y =    97.4261
+  Sensor 16  :  x =    52.0306    y =    31.9122
+  Sensor 17  :  x =    83.0320    y =    45.6424
+  Sensor 18  :  x =    69.4095    y =    71.9674
+  Sensor 19  :  x =    31.4132    y =    52.9610
+  Sensor 20  :  x =    90.0826    y =    66.7441
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 20
+  n_pairs                     : 190
+  r_min_m                     : 10.4047
+  r_max_m                     : 69.7768
+  lambda2                     : 541.574
+  sll_db                      : -20.7838
+  isotropy                    : 0.973163
+  lsd_H                       : 3.17851
+  phi_bessel                  : 9.19691
+  phi_hankel                  : 1.21105
+  dr_db                       : 31.5845
+  mlw_rad_per_m               : 0.0840626
+  eta_res                     : 1
+  spac_criterion              : PASS
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 69.78 m
+  Status                       : OK
+
+============================================================

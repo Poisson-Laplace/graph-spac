@@ -1,0 +1,52 @@
+============================================================
+  GraphSPAC vol3 — Sc 18: Fresnel Shadow — Line-of-Sight Constraint
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 30.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : los_obstacle
+  grid spacing            : 5.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =   110.0000    y =    85.0000
+  Sensor  2  :  x =   125.0000    y =   105.0000
+  Sensor  3  :  x =    95.0000    y =   105.0000
+  Sensor  4  :  x =   120.0000    y =    95.0000
+  Sensor  5  :  x =    95.0000    y =    65.0000
+  Sensor  6  :  x =   110.0000    y =    70.0000
+  Sensor  7  :  x =    80.0000    y =    70.0000
+  Sensor  8  :  x =   120.0000    y =    70.0000
+  Sensor  9  :  x =    90.0000    y =    85.0000
+  Sensor 10  :  x =    75.0000    y =   100.0000
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 10
+  r_max_m                     : 59.497
+  lambda2                     : 241.729
+  sll_db                      : -9.61498
+  isotropy                    : 0.789181
+  lsd_H                       : 2.88033
+  phi_bessel                  : 2.30062
+  phi_hankel                  : 0.23945
+  dr_db                       : 21.9857
+  mlw_rad_per_m               : 0.10923
+  eta_res                     : 1
+  spac_criterion              : FAIL
+  los_blocked_frac            : 0
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 59.50 m
+  Status                       : OK
+
+============================================================

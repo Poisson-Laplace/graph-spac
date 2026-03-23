@@ -1,0 +1,51 @@
+============================================================
+  GraphSPAC vol3 — Sc 4: L-Shaped Domain (H₀⁽¹⁾, N=10)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 30.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : L_shape
+  grid spacing            : 5.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    30.0000    y =   140.0000
+  Sensor  2  :  x =     5.0000    y =   115.0000
+  Sensor  3  :  x =    10.0000    y =   145.0000
+  Sensor  4  :  x =    20.0000    y =   145.0000
+  Sensor  5  :  x =    20.0000    y =   135.0000
+  Sensor  6  :  x =     0.0000    y =   140.0000
+  Sensor  7  :  x =     0.0000    y =   130.0000
+  Sensor  8  :  x =    35.0000    y =   135.0000
+  Sensor  9  :  x =    10.0000    y =   100.0000
+  Sensor 10  :  x =    10.0000    y =   125.0000
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 7.071
+  r_max_m                     : 57.071
+  lambda2                     : 196.828
+  sll_db                      : -11.6055
+  isotropy                    : 0.789181
+  lsd_H                       : 2.88033
+  phi_bessel                  : 2.31054
+  phi_hankel                  : 0.338064
+  dr_db                       : 22.7686
+  mlw_rad_per_m               : 0.154476
+  eta_res                     : 1
+  spac_criterion              : FAIL
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 57.07 m
+  Status                       : OK
+
+============================================================

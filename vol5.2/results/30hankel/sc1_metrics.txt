@@ -1,0 +1,71 @@
+============================================================
+  GraphSPAC vol3 — Sc 1: Open Domain (J₀, N=10)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 30
+  d_min                   : 5.0 m
+  focus (target depth)    : 30.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : open
+  grid spacing            : 5.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    62.8105    y =    90.1590
+  Sensor  2  :  x =    51.2452    y =    92.8873
+  Sensor  3  :  x =    69.4227    y =   100.9968
+  Sensor  4  :  x =    39.4571    y =    71.9519
+  Sensor  5  :  x =    96.2149    y =    38.6894
+  Sensor  6  :  x =    39.7750    y =    55.6262
+  Sensor  7  :  x =    98.2895    y =    66.6081
+  Sensor  8  :  x =    80.4667    y =    39.6817
+  Sensor  9  :  x =    70.4622    y =    67.0968
+  Sensor 10  :  x =    44.8600    y =    83.3920
+  Sensor 11  :  x =    98.2823    y =    48.9355
+  Sensor 12  :  x =    54.6515    y =    65.3374
+  Sensor 13  :  x =    88.7081    y =    55.5279
+  Sensor 14  :  x =    47.0319    y =    35.4375
+  Sensor 15  :  x =    71.9749    y =    30.2112
+  Sensor 16  :  x =    62.8156    y =    38.0768
+  Sensor 17  :  x =    87.0530    y =    69.3340
+  Sensor 18  :  x =   112.0197    y =    54.0131
+  Sensor 19  :  x =    74.8647    y =    79.4967
+  Sensor 20  :  x =    53.7339    y =    53.1517
+  Sensor 21  :  x =    61.3402    y =    78.3387
+  Sensor 22  :  x =    50.0973    y =    74.5441
+  Sensor 23  :  x =    66.2802    y =    58.3291
+  Sensor 24  :  x =    81.3107    y =    90.7458
+  Sensor 25  :  x =    78.7012    y =    56.2742
+  Sensor 26  :  x =    43.8357    y =    45.6767
+  Sensor 27  :  x =    69.7561    y =    46.7647
+  Sensor 28  :  x =   104.8871    y =    79.4220
+  Sensor 29  :  x =    89.4284    y =    83.0612
+  Sensor 30  :  x =    55.8491    y =    28.5553
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 30
+  n_pairs                     : 435
+  r_min_m                     : 9.71401
+  r_max_m                     : 74.7472
+  lambda2                     : 804.743
+  sll_db                      : -25.9147
+  isotropy                    : 0.980494
+  lsd_H                       : 3.1883
+  phi_bessel                  : 20.8298
+  phi_hankel                  : 3.23606
+  dr_db                       : 39.3539
+  mlw_rad_per_m               : 0.0818166
+  eta_res                     : 1
+  spac_criterion              : PASS
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 74.75 m
+  Status                       : OK
+
+============================================================

@@ -1,0 +1,51 @@
+============================================================
+  GraphSPAC vol3 — Sc 1: Open Domain (J₀, N=10)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 30.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : bessel (J₀)
+  domain                  : open
+  grid spacing            : 5.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    33.9392    y =    46.9124
+  Sensor  2  :  x =    53.4937    y =    70.1002
+  Sensor  3  :  x =    81.5711    y =    39.7375
+  Sensor  4  :  x =    85.1188    y =    69.2238
+  Sensor  5  :  x =    91.7206    y =    79.5573
+  Sensor  6  :  x =    53.8112    y =    56.7552
+  Sensor  7  :  x =    44.2920    y =    99.6309
+  Sensor  8  :  x =    87.5339    y =    52.9556
+  Sensor  9  :  x =    98.4533    y =    64.5069
+  Sensor 10  :  x =    71.5987    y =   102.3429
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 12.2623
+  r_max_m                     : 70.5474
+  lambda2                     : 299.727
+  sll_db                      : -12.0424
+  isotropy                    : 1
+  lsd_H                       : 2.94602
+  phi_bessel                  : 1.4243
+  phi_hankel                  : 0.317598
+  dr_db                       : 21.6075
+  mlw_rad_per_m               : 0.0825509
+  eta_res                     : 1
+  spac_criterion              : FAIL
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 70.55 m
+  Status                       : OK
+
+============================================================

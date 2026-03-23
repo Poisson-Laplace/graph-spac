@@ -1,0 +1,51 @@
+============================================================
+  GraphSPAC vol3 — Sc 0: Custom CLI Configuration
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 100.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : bessel (J₀)
+  domain                  : open
+  grid spacing            : 5.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    10.0000    y =    45.0000
+  Sensor  2  :  x =    75.0000    y =   145.0000
+  Sensor  3  :  x =   125.0000    y =   140.0000
+  Sensor  4  :  x =   140.0000    y =    65.0000
+  Sensor  5  :  x =   115.0000    y =    80.0000
+  Sensor  6  :  x =   145.0000    y =    30.0000
+  Sensor  7  :  x =   115.0000    y =    50.0000
+  Sensor  8  :  x =    50.0000    y =    85.0000
+  Sensor  9  :  x =    65.0000    y =     0.0000
+  Sensor 10  :  x =    45.0000    y =    60.0000
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 25.4951
+  r_max_m                     : 152.315
+  lambda2                     : 629.657
+  sll_db                      : -14.4859
+  isotropy                    : 0.866667
+  lsd_H                       : 2.94194
+  phi_bessel                  : 1.57146
+  phi_hankel                  : 0.306596
+  dr_db                       : 22.2597
+  mlw_rad_per_m               : 0.0384611
+  eta_res                     : 1
+  spac_criterion              : FAIL
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 133.33 m
+  Achieved r_max               : 152.32 m
+  Status                       : OK
+
+============================================================

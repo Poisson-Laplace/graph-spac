@@ -1,0 +1,53 @@
+============================================================
+  GraphSPAC vol3 — Sc 26: Sc26 | Topological Awareness (Pop: 100, Gen: 100)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 12
+  d_min                   : 3.0 m
+  focus (target depth)    : 25.0 m
+  Vs (shear-wave vel.)    : 400.0 m/s
+  kernel                  : bessel (J₀)
+  domain                  : sponge
+  grid spacing            : 4.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    48.3379    y =     9.7332
+  Sensor  2  :  x =    70.3578    y =    37.5129
+  Sensor  3  :  x =    41.5101    y =    47.5064
+  Sensor  4  :  x =    42.4702    y =    36.7660
+  Sensor  5  :  x =    39.5105    y =    26.5050
+  Sensor  6  :  x =    38.1484    y =    60.8060
+  Sensor  7  :  x =    38.4071    y =    15.9330
+  Sensor  8  :  x =    62.0430    y =    30.4737
+  Sensor  9  :  x =    58.6091    y =    57.1576
+  Sensor 10  :  x =    53.2175    y =    31.3995
+  Sensor 11  :  x =    32.9104    y =    49.8973
+  Sensor 12  :  x =    80.1678    y =    43.3260
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 12
+  n_pairs                     : 66
+  r_min_m                     : 8
+  r_max_m                     : 55.3136
+  lambda2                     : 251.507
+  sll_db                      : -15.0064
+  isotropy                    : 0.85626
+  lsd_H                       : 2.95086
+  phi_bessel                  : 2.65534
+  phi_hankel                  : 0.483588
+  dr_db                       : 25.3282
+  mlw_rad_per_m               : 0.115667
+  eta_res                     : 1
+  spac_criterion              : PASS
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 33.33 m
+  Achieved r_max               : 55.31 m
+  Status                       : OK
+
+============================================================

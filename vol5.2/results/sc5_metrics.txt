@@ -1,0 +1,53 @@
+============================================================
+  GraphSPAC vol3 — Sc 5: L-Shape + Noise 0° (Directional Stress, North)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 30.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : L_shape
+  grid spacing            : 5.0 m
+  noise_azimuths          : [0.0] °
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    25.0000    y =   135.0000
+  Sensor  2  :  x =     0.0000    y =   120.0000
+  Sensor  3  :  x =    10.0000    y =   130.0000
+  Sensor  4  :  x =    20.0000    y =   145.0000
+  Sensor  5  :  x =     0.0000    y =   145.0000
+  Sensor  6  :  x =     0.0000    y =   110.0000
+  Sensor  7  :  x =    35.0000    y =   135.0000
+  Sensor  8  :  x =     5.0000    y =   140.0000
+  Sensor  9  :  x =    10.0000    y =   100.0000
+  Sensor 10  :  x =    10.0000    y =   115.0000
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 7.071
+  r_max_m                     : 57.071
+  lambda2                     : 193.717
+  sll_db                      : -10.1061
+  isotropy                    : 0.680278
+  lsd_H                       : 2.92837
+  phi_bessel                  : 2.51789
+  phi_hankel                  : 0.344253
+  dr_db                       : 22.2443
+  mlw_rad_per_m               : 0.158955
+  eta_res                     : 1
+  spac_criterion              : FAIL
+  directional_score           : 0.699477
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 57.07 m
+  Status                       : OK
+
+============================================================

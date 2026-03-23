@@ -1,0 +1,53 @@
+============================================================
+  GraphSPAC vol3 — Sc 26: Sc26 | Baseline (Pop: 100, Gen: 100)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 12
+  d_min                   : 3.0 m
+  focus (target depth)    : 25.0 m
+  Vs (shear-wave vel.)    : 400.0 m/s
+  kernel                  : bessel (J₀)
+  domain                  : sponge
+  grid spacing            : 4.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    76.7933    y =    78.5329
+  Sensor  2  :  x =    37.0668    y =    76.4524
+  Sensor  3  :  x =    71.5969    y =    61.7027
+  Sensor  4  :  x =    68.7855    y =    74.7124
+  Sensor  5  :  x =    85.2998    y =    74.0503
+  Sensor  6  :  x =    59.3807    y =    76.7701
+  Sensor  7  :  x =    54.0552    y =    85.8832
+  Sensor  8  :  x =    66.1444    y =    83.7403
+  Sensor  9  :  x =    61.4638    y =    93.5317
+  Sensor 10  :  x =    75.3530    y =    92.5532
+  Sensor 11  :  x =    70.4109    y =    47.8757
+  Sensor 12  :  x =    37.5679    y =    51.9523
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 12
+  n_pairs                     : 66
+  r_min_m                     : 8
+  r_max_m                     : 57.9408
+  lambda2                     : 224.747
+  sll_db                      : -13.9196
+  isotropy                    : 0.796721
+  lsd_H                       : 2.97404
+  phi_bessel                  : 2.5639
+  phi_hankel                  : 0.571248
+  dr_db                       : 25.396
+  mlw_rad_per_m               : 0.122571
+  eta_res                     : 1
+  spac_criterion              : FAIL
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 33.33 m
+  Achieved r_max               : 57.94 m
+  Status                       : OK
+
+============================================================

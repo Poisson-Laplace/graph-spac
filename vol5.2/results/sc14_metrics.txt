@@ -1,0 +1,53 @@
+============================================================
+  GraphSPAC vol3 — Sc 14: Seismic Corridor 15m × 205m (1D Confinement)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 40.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : canyon
+  grid spacing            : 5.0 m
+  noise_azimuths          : [0.0] °
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =   105.0000    y =    10.0000
+  Sensor  2  :  x =   125.0000    y =    10.0000
+  Sensor  3  :  x =   135.0000    y =    10.0000
+  Sensor  4  :  x =   110.0000    y =     0.0000
+  Sensor  5  :  x =    55.0000    y =    10.0000
+  Sensor  6  :  x =   130.0000    y =    10.0000
+  Sensor  7  :  x =   105.0000    y =     5.0000
+  Sensor  8  :  x =   110.0000    y =    10.0000
+  Sensor  9  :  x =   115.0000    y =     5.0000
+  Sensor 10  :  x =   120.0000    y =     0.0000
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 5
+  r_max_m                     : 80
+  lambda2                     : 158.072
+  sll_db                      : -3.39252
+  isotropy                    : 0
+  lsd_H                       : 2.76118
+  phi_bessel                  : 2.70781
+  phi_hankel                  : 0.730768
+  dr_db                       : 21.2717
+  mlw_rad_per_m               : 0.402473
+  eta_res                     : 0.390286
+  spac_criterion              : FAIL
+  directional_score           : 0.313495
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 53.33 m
+  Achieved r_max               : 80.00 m
+  Status                       : OK
+
+============================================================
