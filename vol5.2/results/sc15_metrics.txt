@@ -1,0 +1,53 @@
+============================================================
+  GraphSPAC vol3 — Sc 15: Cross-Fire: Noise from N + E (90° Sources)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 30.0 m
+  Vs (shear-wave vel.)    : 500.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : open
+  grid spacing            : 5.0 m
+  noise_azimuths          : [0.0, 90.0] °
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    42.0603    y =    56.8570
+  Sensor  2  :  x =    38.6032    y =    74.2566
+  Sensor  3  :  x =    65.9263    y =    41.5894
+  Sensor  4  :  x =    82.4330    y =    92.7360
+  Sensor  5  :  x =   100.0154    y =    78.6496
+  Sensor  6  :  x =    57.1733    y =    67.4077
+  Sensor  7  :  x =    50.8040    y =    45.7443
+  Sensor  8  :  x =    88.2929    y =    57.7005
+  Sensor  9  :  x =    84.2390    y =    37.4255
+  Sensor 10  :  x =    58.7098    y =    33.2283
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 11.0448
+  r_max_m                     : 64.0621
+  lambda2                     : 291.931
+  sll_db                      : -10.6587
+  isotropy                    : 0.811438
+  lsd_H                       : 3.06323
+  phi_bessel                  : 2.55131
+  phi_hankel                  : 0.283721
+  dr_db                       : 22.4046
+  mlw_rad_per_m               : 0.0925882
+  eta_res                     : 1
+  spac_criterion              : FAIL
+  directional_score           : 0.64725
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 64.06 m
+  Status                       : OK
+
+============================================================

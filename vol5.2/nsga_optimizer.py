@@ -116,31 +116,34 @@ def golomb_redundancy(coords, n_bins=100, r_max_hint=None):
 
 # ── Near-field Hankel objective ───────────────────────────────────────────────
 
-def near_field_phi(coords, source_pos, k_eval=None):
+def near_field_phi(coords, source_pos, depth=0.0, k_eval=None):
     """
-    Near-field Hankel sampling error.
-    For each pair (i, j), the expected coherence involves the relative
-    phase to a point source at source_pos:
-        γ_ij = H₀⁽¹⁾(k·r_i) / H₀⁽¹⁾(k·r_j)   (amplitude)
-    We penalise large variance in the sampled Hankel phase across pairs.
+    Near-field Hankel phase matching objective.
+    ONLY computes phase variance — centroid anchoring is now a hard G constraint.
     """
     from scipy.special import j0, y0
 
     coords = np.asarray(coords)
-    src = np.asarray(source_pos)
-    dists_to_src = np.linalg.norm(coords - src, axis=1)
+    sx, sy = source_pos[0], source_pos[1]
+
+    # True 3D distance from sensors (Z=0) to source at depth
+    dx = coords[:, 0] - sx
+    dy = coords[:, 1] - sy
+    dz = abs(depth)
+    dists_to_src = np.sqrt(dx**2 + dy**2 + dz**2)
 
     if k_eval is None:
         r_mean = np.mean(dists_to_src)
         k_eval = 2 * np.pi / r_mean if r_mean > 0 else 0.1
 
     h_vals = np.abs(j0(k_eval * dists_to_src) + 1j * y0(k_eval * dists_to_src + 1e-9))
-    # reward an array where the Hankel magnitude varies maximally
-    # (samples different phase-front curvatures)
-    if np.mean(h_vals) == 0:
-        return 1.0
-    cv = np.std(h_vals) / np.mean(h_vals)
-    return float(1.0 - cv)   # lower = less variation = penalised
+
+    cv = 0.0
+    h_mean = np.mean(h_vals)
+    if h_mean > 0:
+        cv = np.std(h_vals) / h_mean
+
+    return float(cv)
 
 
 # ── Topological Awareness / Spatial Seeding ───────────────────────────────────
@@ -234,6 +237,7 @@ class GraphSPACProblem(ElementwiseProblem):
                  focus=30.0,
                  vs=500.0,
                  use_poincare=False,
+                 r_max=None,
                  weights=None):  # NEW: scenario-specific weights
 
         self.gm              = manifold_manager
@@ -248,6 +252,7 @@ class GraphSPACProblem(ElementwiseProblem):
         self.focus           = float(focus)
         self.vs              = float(vs)
         self.use_poincare    = use_poincare
+        self.r_max           = float(r_max) if r_max is not None else None
         
         # NEW: Scenario-based objective weights (default: precision mode)
         self.weights = weights or {
@@ -275,6 +280,10 @@ class GraphSPACProblem(ElementwiseProblem):
         
         # constraints: n_pairs for d_min, n_feas for domain, 1 for hard aperture limit
         n_ieq = n_pairs + n_feas + 1
+        if self.r_max is not None:
+            n_ieq += n_pairs
+        if self.near_field and self.near_field_src is not None:
+            n_ieq += 1  # hard centroid anchor: centroid must be within d_min of source XY
 
         # count objectives
         n_obj = 2   # Multi-Objective Pareto Optimization
@@ -413,20 +422,22 @@ class GraphSPACProblem(ElementwiseProblem):
             obj_1 += gr     # minimise redundancy
 
         if self.near_field:
-            src = self.near_field_src or (
-                self.gm.x_max / 2, -20.0)   # default: 20m south of centre
-            nf = near_field_phi(coords, src)
-            obj_1 += nf     # minimise (1 - cv) i.e. maximise sampling variation
+            src = self.near_field_src if self.near_field_src is not None else (self.x_max / 2, 20.0)
+            nf = near_field_phi(coords, src, depth=self.focus)
+            # 50.0 çok büyüktü, 10.0 yapıyoruz ki diğer objective'lerle yarışabilsin
+            obj_1 += 10.0 * nf
 
         out["F"] = [obj_1, obj_2]
 
         # ── constraints ──
         g = []
-        # d_min constraints
+        # d_min and r_max constraints
         for i in range(self.N):
             for j in range(i + 1, self.N):
                 r = dist_matrix[i, j] if dist_matrix is not None else np.linalg.norm(coords[j] - coords[i])
                 g.append(self.d_min - r)
+                if self.r_max is not None:
+                    g.append(r - self.r_max)
 
         # NEW: Hard aperture constraint (r_max < 2.5 * focus)
         g.append(r_max - aperture_limit)
@@ -436,6 +447,16 @@ class GraphSPACProblem(ElementwiseProblem):
             for i in range(self.N):
                 xi, yi = coords[i]
                 g.append(0.0 if self._is_in_domain(xi, yi) else 1.0)
+
+        # ── near-field hard centroid anchor ──
+        if self.near_field and self.near_field_src is not None:
+            cx = np.mean(coords[:, 0])
+            cy = np.mean(coords[:, 1])
+            sx, sy = self.near_field_src[0], self.near_field_src[1]
+            centroid_dist = np.sqrt((cx - sx)**2 + (cy - sy)**2)
+            # G <= 0 means feasible, so: centroid_dist - tolerance <= 0
+            # allow centroid within d_min radius of source XY
+            g.append(centroid_dist - self.d_min * 2.0)
 
         out["G"] = g
 
@@ -470,6 +491,7 @@ class NSGAOptimizer:
                  vs=500.0,
                  use_poincare=False,
                  use_seeding=True,
+                 r_max=None,
                  pop_size=100, n_gen=200, seed=None, weights=None):
 
         self.gm               = manifold_manager
@@ -486,6 +508,8 @@ class NSGAOptimizer:
         self.use_poincare     = use_poincare
         self.pop_size         = pop_size
         self.use_seeding      = use_seeding
+        self.r_max            = r_max
+        print(f"[DEBUG NSGA-II] r_max constraint boundary set to: {self.r_max}")
         self.n_gen            = n_gen
         self.seed             = seed if seed is not None else self.SEED
         self.weights          = weights
@@ -507,6 +531,7 @@ class NSGAOptimizer:
             focus=self.focus,
             vs=self.vs,
             use_poincare=self.use_poincare,
+            r_max=self.r_max,
             weights=self.weights
         )
 

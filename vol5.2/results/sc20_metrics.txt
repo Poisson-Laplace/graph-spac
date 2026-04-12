@@ -1,0 +1,52 @@
+============================================================
+  GraphSPAC vol3 — Sc 20: Spherical Near-Field (source at 20 m)
+============================================================
+
+SCENARIO PARAMETERS
+----------------------------------------
+  N (sensors)             : 10
+  d_min                   : 5.0 m
+  focus (target depth)    : 20.0 m
+  Vs (shear-wave vel.)    : 400.0 m/s
+  kernel                  : hankel (H₀⁽¹⁾)
+  domain                  : open
+  grid spacing            : 5.0 m
+
+SENSOR POSITIONS (x, y) [m]
+----------------------------------------
+  Sensor  1  :  x =    57.2579    y =    11.3757
+  Sensor  2  :  x =    63.3070    y =    23.4643
+  Sensor  3  :  x =    52.7229    y =    33.4348
+  Sensor  4  :  x =    41.4221    y =    10.2526
+  Sensor  5  :  x =    59.3299    y =    30.7202
+  Sensor  6  :  x =    38.2927    y =    28.1118
+  Sensor  7  :  x =    47.5176    y =    34.3595
+  Sensor  8  :  x =    42.1760    y =    32.8812
+  Sensor  9  :  x =    36.2913    y =    23.1591
+  Sensor 10  :  x =    36.5356    y =    16.5456
+
+COMPUTED METRICS
+----------------------------------------
+  N                           : 10
+  n_pairs                     : 45
+  r_min_m                     : 5.28674
+  r_max_m                     : 27.651
+  lambda2                     : 143.617
+  sll_db                      : -12.8454
+  isotropy                    : 0.811438
+  lsd_H                       : 2.95918
+  phi_bessel                  : 2.29617
+  phi_hankel                  : 0.365088
+  dr_db                       : 22.0205
+  mlw_rad_per_m               : 0.191473
+  eta_res                     : 1
+  spac_criterion              : FAIL
+  near_field_phi              : 0.0388142
+
+APERTURE CHECK
+----------------------------------------
+  Required r_max (4/3 x focus) : 26.67 m
+  Achieved r_max               : 27.65 m
+  Status                       : OK
+
+============================================================

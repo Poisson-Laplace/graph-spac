@@ -6,7 +6,7 @@ SCENARIO PARAMETERS
 ----------------------------------------
   N (sensors)             : 10
   d_min                   : 5.0 m
-  focus (target depth)    : 100.0 m
+  focus (target depth)    : 30.0 m
   Vs (shear-wave vel.)    : 500.0 m/s
   kernel                  : hankel (H₀⁽¹⁾)
   domain                  : u_shape
@@ -14,38 +14,38 @@ SCENARIO PARAMETERS
 
 SENSOR POSITIONS (x, y) [m]
 ----------------------------------------
-  Sensor  1  :  x =   130.0000    y =    75.0000
-  Sensor  2  :  x =    85.0000    y =   145.0000
-  Sensor  3  :  x =    45.0000    y =   130.0000
-  Sensor  4  :  x =    40.0000    y =    90.0000
-  Sensor  5  :  x =    10.0000    y =   125.0000
-  Sensor  6  :  x =    15.0000    y =    35.0000
-  Sensor  7  :  x =    85.0000    y =   120.0000
-  Sensor  8  :  x =     0.0000    y =    85.0000
-  Sensor  9  :  x =   110.0000    y =     5.0000
-  Sensor 10  :  x =    40.0000    y =    55.0000
+  Sensor  1  :  x =    41.5427    y =    71.9813
+  Sensor  2  :  x =    41.3761    y =   102.7086
+  Sensor  3  :  x =    35.3001    y =   131.9010
+  Sensor  4  :  x =    67.4194    y =   103.4665
+  Sensor  5  :  x =    58.7968    y =   116.3063
+  Sensor  6  :  x =    20.0181    y =   131.3588
+  Sensor  7  :  x =    74.5823    y =   118.3662
+  Sensor  8  :  x =    44.1794    y =   117.6720
+  Sensor  9  :  x =    30.9417    y =    86.8797
+  Sensor 10  :  x =    30.3387    y =   104.8896
 
 COMPUTED METRICS
 ----------------------------------------
   N                           : 10
   n_pairs                     : 45
-  r_min_m                     : 25
-  r_max_m                     : 161.42
-  lambda2                     : 619.501
-  sll_db                      : -14.0313
+  r_min_m                     : 10
+  r_max_m                     : 68.284
+  lambda2                     : 253.092
+  sll_db                      : -12.9712
   isotropy                    : 1
-  lsd_H                       : 2.93593
-  phi_bessel                  : 2.56857
-  phi_hankel                  : 0.289134
-  dr_db                       : 24.6145
-  mlw_rad_per_m               : 0.0403518
+  lsd_H                       : 3.08241
+  phi_bessel                  : 2.40806
+  phi_hankel                  : 0.30224
+  dr_db                       : 23.5465
+  mlw_rad_per_m               : 0.0955191
   eta_res                     : 1
   spac_criterion              : FAIL
 
 APERTURE CHECK
 ----------------------------------------
-  Required r_max (4/3 x focus) : 133.33 m
-  Achieved r_max               : 161.42 m
+  Required r_max (4/3 x focus) : 40.00 m
+  Achieved r_max               : 68.28 m
   Status                       : OK
 
 ============================================================

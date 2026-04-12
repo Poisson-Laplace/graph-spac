@@ -14,38 +14,38 @@ SCENARIO PARAMETERS
 
 SENSOR POSITIONS (x, y) [m]
 ----------------------------------------
-  Sensor  1  :  x =    30.0000    y =   140.0000
-  Sensor  2  :  x =     5.0000    y =   115.0000
-  Sensor  3  :  x =    10.0000    y =   145.0000
-  Sensor  4  :  x =    20.0000    y =   145.0000
-  Sensor  5  :  x =    20.0000    y =   135.0000
-  Sensor  6  :  x =     0.0000    y =   140.0000
-  Sensor  7  :  x =     0.0000    y =   130.0000
-  Sensor  8  :  x =    35.0000    y =   135.0000
-  Sensor  9  :  x =    10.0000    y =   100.0000
-  Sensor 10  :  x =    10.0000    y =   125.0000
+  Sensor  1  :  x =     9.7963    y =   143.5571
+  Sensor  2  :  x =     0.0591    y =   141.1169
+  Sensor  3  :  x =    38.8539    y =   135.0283
+  Sensor  4  :  x =     8.3487    y =   133.7985
+  Sensor  5  :  x =    10.0003    y =    98.1947
+  Sensor  6  :  x =     0.0658    y =   112.2141
+  Sensor  7  :  x =    25.0657    y =   142.6388
+  Sensor  8  :  x =     4.1530    y =   124.0986
+  Sensor  9  :  x =    11.9645    y =   120.8905
+  Sensor 10  :  x =    28.2145    y =   132.5310
 
 COMPUTED METRICS
 ----------------------------------------
   N                           : 10
   n_pairs                     : 45
   r_min_m                     : 7.071
-  r_max_m                     : 57.071
-  lambda2                     : 196.828
-  sll_db                      : -11.6055
-  isotropy                    : 0.789181
-  lsd_H                       : 2.88033
-  phi_bessel                  : 2.31054
-  phi_hankel                  : 0.338064
-  dr_db                       : 22.7686
-  mlw_rad_per_m               : 0.154476
+  r_max_m                     : 62.071
+  lambda2                     : 196.112
+  sll_db                      : -12.9961
+  isotropy                    : 0.733333
+  lsd_H                       : 2.94
+  phi_bessel                  : 2.70033
+  phi_hankel                  : 0.360355
+  dr_db                       : 23.5026
+  mlw_rad_per_m               : 0.148453
   eta_res                     : 1
   spac_criterion              : FAIL
 
 APERTURE CHECK
 ----------------------------------------
   Required r_max (4/3 x focus) : 40.00 m
-  Achieved r_max               : 57.07 m
+  Achieved r_max               : 62.07 m
   Status                       : OK
 
 ============================================================

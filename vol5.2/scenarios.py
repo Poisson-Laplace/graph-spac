@@ -17,6 +17,14 @@ WEIGHT_SETS = {
         "dr": 0.5,
         "eta": 0.5,
     },
+    "targeting": {
+        "lsd": 0.1,
+        "sll": 5.0,
+        "lam2": 0.5,
+        "graph_ent": 0.5,
+        "dr": 0.5,
+        "eta": 0.5,
+    },
     "discovery": {
         "lsd": 3.0,
         "sll": 1.0,
@@ -62,7 +70,8 @@ def _sc(id, name, desc, domain, N, d_min, focus, vs, kernel,
         "near_field": near_field, "near_field_source": nf_src,
         "mode": mode,
         "weights": WEIGHT_SETS[mode],
-        **{k: v for k, v in kw.items() if k not in ("gridsize", "spacing")},
+        "r_max": kw.get("r_max", 1.5 * focus if mode == "targeting" else None),
+        **{k: v for k, v in kw.items() if k not in ("gridsize", "spacing", "r_max")},
     })
     return sc
 
@@ -87,17 +96,6 @@ SCENARIOS = [
         "open", N=10, d_min=5.0, focus=30.0, vs=500.0, kernel="bessel",
         mode="precision"),
 
-    # 2
-    _sc(2, "Open Domain (J₀, N=2) — Single Pair",
-        "N=2 edge case: single co-array pair. λ₂ and LSD entropy at minimum.",
-        "open", N=2, d_min=5.0, focus=30.0, vs=500.0, kernel="bessel",
-        gridsize=20, mode="precision"),
-        
-    # 3
-    _sc(3, "Open Domain (H₀⁽¹⁾, N=2) — Single Pair",
-        "N=2 edge case: single co-array pair. λ₂ and LSD entropy at minimum.",
-        "open", N=2, d_min=5.0, focus=30.0, vs=500.0, kernel="hankel",
-        gridsize=20, mode="precision"),
 
     # 11
     _sc(11, "Deep Focus (focus=50 m, N=10)",
@@ -110,12 +108,6 @@ SCENARIOS = [
         "Small aperture needed — GA biases r_min. Bimodal LSD when overlaid with Sc 11.",
         "open", N=8, d_min=2.5, focus=75.0, vs=250.0, kernel="bessel",
         gridsize=15, spacing=2.5, mode="precision"),
-
-    # 17
-    _sc(17, "Variable Spacing (spacing=10 m, dmin=2 m) — Grid-Lock Test",
-        "Coarse grid but fine dmin: does GA escape Grid-Lock into Hankel manifold?",
-        "open", N=10, d_min=2.0, focus=30.0, vs=500.0, kernel="bessel",
-        gridsize=20, spacing=10.0, mode="precision"),
 
     # 19 (Added here because it fits Precision logic and was missing from the user's prompt)
     _sc(19, "2D Golomb Ruler — Zero-Redundancy Co-array",
@@ -166,20 +158,6 @@ SCENARIOS = [
         "u_shape", N=10, d_min=5.0, focus=30.0, vs=500.0, kernel="hankel",
         mode="discovery"),
 
-    # 9
-    _sc(9, "Urban Canyon 15m × 105m (High Aspect Ratio)",
-        "Extreme aspect ratio — Euclidean Bottleneck. Pseudo-linear advantage.",
-        "canyon", N=8, d_min=5.0, focus=20.0, vs=400.0, kernel="bessel",
-        canyon_width_cells=3, canyon_length_cells=21, gridsize=21,
-        mode="discovery"),
-
-    # 14
-    _sc(14, "Seismic Corridor 15m × 205m (1D Confinement)",
-        "Extreme 1D confinement. Hankel pseudo-linear gain, noise from tunnel end.",
-        "canyon", N=10, d_min=5.0, focus=40.0, vs=500.0, kernel="hankel",
-        noise_az=[0.0], canyon_width_cells=3, canyon_length_cells=41, gridsize=41,
-        mode="discovery"),
-
     # 15
     _sc(15, "Cross-Fire: Noise from N + E (90° Sources)",
         "Two dominant sources: North (0°) and East (90°). Dual-azimuth Pareto.",
@@ -192,11 +170,11 @@ SCENARIOS = [
         "los_obstacle", N=10, d_min=5.0, focus=30.0, vs=500.0, kernel="hankel",
         los=True, obstacle_fraction=0.12, mode="discovery"),
     
-    # 20 (Added here because it fits Directional logic and was missing from the user's prompt)
+    # 20
     _sc(20, "Spherical Near-Field (source at 20 m)",
         "Point source nearby — wavefront curvature. Array acts as parabolic dish.",
         "open", N=10, d_min=5.0, focus=20.0, vs=400.0, kernel="hankel",
-        near_field=True, nf_src=(50.0, 20.0), gridsize=20, mode="discovery"),
+        near_field=True, nf_src=(50.0, 20.0), gridsize=20, mode="targeting"),
 
     # 25
     _sc(25, "Divided Highway (Two Corridors)",
@@ -210,12 +188,6 @@ SCENARIOS = [
     # Highly non-convex or disconnected areas targeting Fiedler Value (λ₂) checks.
     # Old Order: 7, 10, 13, 16, 21, 26, 22
     # ========================================================================
-
-    # 7
-    _sc(7, "L-Shape + Central Obstacle (Hole Scenario)",
-        "Building at inner corner — how does GA bridge λ₂ across the gap?",
-        "L_hole", N=10, d_min=5.0, focus=30.0, vs=500.0, kernel="bessel",
-        hole_radius=3, mode="robust"),
 
     # 10
     _sc(10, "The Graveyard (Scattered Blocks)",
@@ -246,12 +218,6 @@ SCENARIOS = [
         "A highly non-convex, porous structure creating topological fragmentation.",
         "sponge", N=12, d_min=3.0, focus=25.0, vs=400.0, kernel="bessel",
         gridsize=40, spacing=4.0, porosity=0.45, mode="discovery"),
-
-    # 22
-    _sc(22, "The Donut (Central Pit)",
-        "Massive central circular obstacle. Only the narrow perimeter is accessible.",
-        "donut", N=10, d_min=5.0, focus=20.0, vs=350.0, kernel="bessel",
-        mode="precision"),
 ]
 
 SCENARIO_MAP = {sc["id"]: sc for sc in SCENARIOS}

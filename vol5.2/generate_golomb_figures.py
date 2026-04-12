@@ -33,6 +33,14 @@ def plot_pairwise_histogram(coords, name, out_dir):
     plt.ylabel("Frequency (Count)", fontsize=12)
     plt.grid(axis='y', alpha=0.5)
     
+    import matplotlib.ticker as ticker
+    plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(5))
+    
+    # Eksenleri N=30 için sabitle ki Golomb ile Classical grafikleri adil kıyaslanabilsin
+    if "30" in name:
+        plt.xlim(0, 75)
+        plt.ylim(0, 55)
+    
     out_file = os.path.join(out_dir, f"{name.replace(' ', '_').lower()}_distances.png")
     plt.tight_layout()
     plt.savefig(out_file, dpi=300)
@@ -68,27 +76,42 @@ def run_golomb_generator(N_values, gens, pop, base_out):
         # Let's use multiple rings to approximate "Nested Triangles" 
         from classical_arrays import circle_array
         
-        # Let's create an N-sensor 'Nested Triangles' by repeatedly drawing inner triangles
-        coords_nested = []
-        _N = N
-        _r = r_outer
-        while _N >= 3:
-            h = _r * np.sqrt(3) / 2
-            side = _r * np.sqrt(3)
-            # Add a triangle
-            coords_nested.extend([
-                [100.0, 100.0 + 2 * h / 3],
-                [100.0 - side / 2, 100.0 - h / 3],
-                [100.0 + side / 2, 100.0 - h / 3],
-            ])
-            _N -= 3
-            _r *= 0.6 # shrink
-            # Rotate by 60 deg for next
+        def get_nested_triangles_exact(N, r_outer=40.0):
+            cx, cy = 75.0, 75.0
+            nodes = []
             
-        while len(coords_nested) < N:
-            coords_nested.append([100.0, 100.0]) # Add to center if needed
+            def add_triangle(r, angle_offset, points_per_edge):
+                corners = [np.array([cx + r*np.cos(angle_offset + i*2*np.pi/3), 
+                                     cy + r*np.sin(angle_offset + i*2*np.pi/3)]) for i in range(3)]
+                nodes.extend(corners)
+                for i in range(3):
+                    p1 = corners[i]
+                    p2 = corners[(i+1)%3]
+                    for j in range(1, points_per_edge + 1):
+                        t = j / (points_per_edge + 1)
+                        nodes.append(p1 * (1 - t) + p2 * t)
             
-        baseline_coords = np.array(coords_nested[:N])
+            if N == 10:
+                nodes.append(np.array([cx, cy]))
+                add_triangle(r_outer, 0.0, 0)
+                add_triangle(r_outer * 0.50, np.pi/3, 0)
+                add_triangle(r_outer * 0.15, np.pi/6, 0)
+                
+            elif N == 30:
+                add_triangle(r_outer, np.pi/2, 3) 
+                add_triangle(r_outer * 0.5, -np.pi/2, 2)
+                add_triangle(r_outer * 0.25, np.pi/2, 2)
+                
+            else: # N == 20
+                add_triangle(r_outer, np.pi/2, 2) 
+                add_triangle(r_outer * 0.5, -np.pi/2, 1) 
+                add_triangle(r_outer * 0.25, -np.pi/2, 0) 
+                nodes.append(np.array([cx - 2.5, cy]))
+                nodes.append(np.array([cx + 2.5, cy]))
+                
+            return np.array(nodes[:N])
+            
+        baseline_coords = get_nested_triangles_exact(N, r_outer)
             
         plot_pairwise_histogram(baseline_coords, f"nested_triangles_{N}", base_out)
         

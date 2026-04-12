@@ -216,6 +216,7 @@ def run_scenario(sc, args, out_dir):
         use_poincare=args.poincare,
         use_seeding=not getattr(args, "noseed", False),
         weights=sc.get("weights"),  # NEW: Pass scenario-specific weights
+        r_max=args.rmax if args.rmax is not None else sc.get("r_max"),
     )
 
     w_arr = opt.get_weight_array()
@@ -389,6 +390,8 @@ def main():
     # array
     parser.add_argument("--sensors",  type=int,   default=None)
     parser.add_argument("--dmin",     type=float, default=None)
+    parser.add_argument("--rmax",     type=float, default=None,
+                        help="Maximum separation distance (Spatial Aliasing Limit)")
     parser.add_argument("--focus",    type=float, default=None)
     parser.add_argument("--vs",       type=float, default=None)
     parser.add_argument("--kernel",   type=str,   default=None, choices=["bessel", "hankel"],
