@@ -4,6 +4,7 @@
 GraphSPAC is an advanced, graph-theory-based optimization framework designed to generate ideal seismic sensor array geometries (such as SPAC, ESPAC) specifically for highly constrained urban spaces where classical circular or Euclidean arrays cannot be utilized. 
 
 With **vol5.2**, the framework introduces a paradigm shift from simple *Geometric Fitting* to *Topological Synthesis*. Utilizing a Genetic Algorithm (NSGA-II) combined with Spectral Graph Theory, Dijkstra geodesic pathfinding, and Magnetic Repair operators, it shapes optimal array responses by intelligently navigating obstacles, accommodating directional noise, and escaping non-convex "Euclidean bottlenecks" in complex modern cities.
+sowwy that i forgor to push the ta(spatial seeding), snap_to_valid_coords; r_max; centroid anchor 👉👈🥺. Everything is now fully synced before the upcoming paradigm shift in geophysical sensor array design; stay tuned for the full disclosure of the GraphSPAC methodology.
 
 ---
 
